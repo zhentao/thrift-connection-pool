@@ -38,7 +38,9 @@ public class Example {
         AbandonedConfig abandonedConfig = new AbandonedConfig();
         abandonedConfig.setRemoveAbandonedOnBorrow(true);
         abandonedConfig.setRemoveAbandonedOnMaintenance(true);
-        TSocketProvider provider = new TSocketProvider(new ThriftPoolableObjectFactory("192.168.56.102", 5396, 0),
+
+        //create TSocketProvider
+        TSocketProvider provider = new TSocketProvider(new ThriftPoolableObjectFactory("127.0.0.1", 5396, 0),
                                         config, abandonedConfig);
 
         Example ex = new Example(provider);
