@@ -4,12 +4,14 @@ public interface ConnectionProvider<T> {
 
     /**
      * retrieve a connection from pool
-     * @return
+     *
+     * @return a connection
      */
     public T getConnection();
 
     /**
      * return the instance to the pool
+     *
      * @param socket
      */
     public void returnObject(T instance);
@@ -17,5 +19,5 @@ public interface ConnectionProvider<T> {
     /**
      * destroy the pool
      */
-    void destroy() ;
+    void destroy();
 }

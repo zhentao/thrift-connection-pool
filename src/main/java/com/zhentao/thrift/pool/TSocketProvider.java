@@ -9,7 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class TSocketProvider implements ConnectionProvider<TSocket> {
-    public static final Logger logger = LoggerFactory.getLogger(TSocketProvider.class);
+    private static final Logger logger = LoggerFactory.getLogger(TSocketProvider.class);
 
     private ObjectPool<TSocket> objectPool;
 
@@ -40,8 +40,9 @@ public class TSocketProvider implements ConnectionProvider<TSocket> {
         try {
             objectPool.close();
         } catch (Exception e) {
-            logger.error("unable to close the connection pool", e);
+            logger.warn("unable to close the connection pool", e);
         }
+        objectPool = null;
     }
 
     @Override
@@ -58,7 +59,7 @@ public class TSocketProvider implements ConnectionProvider<TSocket> {
         try {
             objectPool.returnObject(socket);
         } catch (Exception e) {
-            logger.error("unable to return instance to the connection pool", e);
+            logger.warn("unable to return instance to the connection pool", e);
         }
     }
 }

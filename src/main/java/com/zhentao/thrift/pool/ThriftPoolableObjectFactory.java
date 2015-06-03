@@ -9,7 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class ThriftPoolableObjectFactory extends BasePooledObjectFactory<TSocket> {
-    public static final Logger logger = LoggerFactory.getLogger(ThriftPoolableObjectFactory.class);
+    private static final Logger logger = LoggerFactory.getLogger(ThriftPoolableObjectFactory.class);
     private final String serviceHost;
     private final int servicePort;
     private final int timeOut;
@@ -19,8 +19,8 @@ public class ThriftPoolableObjectFactory extends BasePooledObjectFactory<TSocket
      * @param servicePort
      * @param timeOut
      */
-    public ThriftPoolableObjectFactory(String serviceIP, int servicePort, int timeOut) {
-        this.serviceHost = serviceIP;
+    public ThriftPoolableObjectFactory(String serviceHost, int servicePort, int timeOut) {
+        this.serviceHost = serviceHost;
         this.servicePort = servicePort;
         this.timeOut = timeOut;
     }
@@ -31,13 +31,16 @@ public class ThriftPoolableObjectFactory extends BasePooledObjectFactory<TSocket
         if (socket.isOpen()) {
             socket.close();
         }
+        logger.debug("destroy {}", socket);
+
     }
 
     @Override
     public TSocket create() throws TTransportException {
-        TSocket transport = new TSocket(this.serviceHost, this.servicePort, this.timeOut);
-        transport.open();
-        return transport;
+        TSocket socket = new TSocket(this.serviceHost, this.servicePort, this.timeOut);
+        socket.open();
+        logger.debug("create pooled socket: {}", socket);
+        return socket;
     }
 
     @Override
@@ -48,8 +51,7 @@ public class ThriftPoolableObjectFactory extends BasePooledObjectFactory<TSocket
     @Override
     public boolean validateObject(PooledObject<TSocket> arg0) {
         try {
-            TSocket thriftSocket = arg0.getObject();
-            return thriftSocket.isOpen();
+            return arg0.getObject().isOpen();
         } catch (Exception e) {
             logger.error("error validating TSocket", e);
             return false;
